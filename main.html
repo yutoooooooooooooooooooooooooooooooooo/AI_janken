@@ -64,7 +64,7 @@
         display: flex;
         justify-content: center;
         gap: 12px;
-        margin-bottom: 28px;
+        margin-bottom: 12px;
       }
 
       .score {
@@ -127,9 +127,60 @@
         line-height: 1;
       }
 
+      .reveal {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .reveal[hidden] {
+        display: none;
+      }
+
+      .played {
+        padding: 14px 10px 12px;
+        border-radius: 18px;
+        background: #e6f2fc;
+      }
+
+      .played.ai {
+        border: 2px solid #f0c98a;
+        background: #fff8ee;
+      }
+
+      .played span {
+        display: block;
+        color: #5682a8;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .played.ai span {
+        color: #a06a22;
+      }
+
+      .played .emoji {
+        margin: 6px 0 2px;
+        font-size: 3rem;
+      }
+
+      .played strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+
+      .versus {
+        color: #5682a8;
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
       .result {
         min-height: 104px;
-        margin-top: 24px;
+        margin-top: 16px;
         padding: 18px;
         border-radius: 18px;
         background: #eaf4fc;
@@ -145,16 +196,33 @@
         color: #587894;
       }
 
-      .result[data-outcome="win"] h2 {
-        color: #246da8;
+      .result[data-outcome="lose"] {
+        background: #fff0ef;
       }
 
       .result[data-outcome="lose"] h2 {
-        color: #246da8;
+        color: #b42318;
+      }
+
+      .result[data-outcome="draw"] {
+        background: #fff8df;
+      }
+
+      .result[data-outcome="draw"] h2 {
+        color: #8a5a00;
+      }
+
+      .result[data-outcome="win"] {
+        background: #e9f7ef;
+      }
+
+      .result[data-outcome="win"] h2 {
+        color: #197044;
       }
 
       .reset {
-        margin-top: 18px;
+        display: block;
+        margin: 0 auto 28px;
         padding: 10px 18px;
         border: 0;
         border-radius: 999px;
@@ -196,7 +264,7 @@
     <main class="game">
       <p class="eyebrow">ROCK · PAPER · SCISSORS</p>
       <h1>じゃんけん</h1>
-      <p class="intro">手を選んで、コンピューターと勝負しよう！</p>
+      <p class="intro">手を選んで、AIと勝負しよう！</p>
 
       <section class="scoreboard" aria-label="スコア">
         <div class="score">
@@ -204,8 +272,28 @@
           <strong id="player-score">0</strong>
         </div>
         <div class="score">
-          <span>コンピューター</span>
+          <span>AI</span>
           <strong id="computer-score">0</strong>
+        </div>
+      </section>
+      <button class="reset" id="reset" type="button">スコアをリセット</button>
+
+      <section class="result" id="result" aria-live="polite" aria-atomic="true">
+        <h2 id="result-title">さあ、勝負！</h2>
+        <p id="result-detail">グー・パー・チョキから選んでね。</p>
+      </section>
+
+      <section class="reveal" id="reveal" hidden aria-label="出した手">
+        <div class="played">
+          <span>あなた</span>
+          <span class="emoji" id="player-hand-emoji" aria-hidden="true">✊</span>
+          <strong id="player-hand-name">グー</strong>
+        </div>
+        <p class="versus">VS</p>
+        <div class="played ai">
+          <span>AIの手</span>
+          <span class="emoji" id="ai-hand-emoji" aria-hidden="true">✋</span>
+          <strong id="ai-hand-name">パー</strong>
         </div>
       </section>
 
@@ -214,19 +302,13 @@
         <button class="choice" type="button" data-choice="rock" aria-label="グー">
           <span class="emoji" aria-hidden="true">✊</span>グー
         </button>
-        <button class="choice" type="button" data-choice="paper" aria-label="パー">
-          <span class="emoji" aria-hidden="true">✋</span>パー
-        </button>
         <button class="choice" type="button" data-choice="scissors" aria-label="チョキ">
           <span class="emoji" aria-hidden="true">✌️</span>チョキ
         </button>
+        <button class="choice" type="button" data-choice="paper" aria-label="パー">
+          <span class="emoji" aria-hidden="true">✋</span>パー
+        </button>
       </div>
-
-      <section class="result" id="result" aria-live="polite" aria-atomic="true">
-        <h2 id="result-title">さあ、勝負！</h2>
-        <p id="result-detail">グー・パー・チョキから選んでね。</p>
-      </section>
-      <button class="reset" id="reset" type="button">スコアをリセット</button>
     </main>
 
     <script>
@@ -250,6 +332,11 @@
       const resultElement = document.querySelector("#result");
       const resultTitle = document.querySelector("#result-title");
       const resultDetail = document.querySelector("#result-detail");
+      const revealElement = document.querySelector("#reveal");
+      const playerHandEmoji = document.querySelector("#player-hand-emoji");
+      const playerHandName = document.querySelector("#player-hand-name");
+      const aiHandEmoji = document.querySelector("#ai-hand-emoji");
+      const aiHandName = document.querySelector("#ai-hand-name");
 
       function play(playerChoice) {
         const computerChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -265,13 +352,19 @@
           computerScore += 1;
         }
 
+        const playerHand = hands[playerChoice];
+        const aiHand = hands[computerChoice];
+
         playerScoreElement.textContent = playerScore;
         computerScoreElement.textContent = computerScore;
+        playerHandEmoji.textContent = playerHand.emoji;
+        playerHandName.textContent = playerHand.name;
+        aiHandEmoji.textContent = aiHand.emoji;
+        aiHandName.textContent = aiHand.name;
+        revealElement.hidden = false;
         resultElement.dataset.outcome = outcome;
         resultTitle.textContent = outcome === "draw" ? "あいこ！" : outcome === "win" ? "あなたの勝ち！" : "あなたの負け…";
-        resultDetail.textContent =
-          `あなた ${hands[playerChoice].emoji}${hands[playerChoice].name} ／ ` +
-          `コンピューター ${hands[computerChoice].emoji}${hands[computerChoice].name}`;
+        resultDetail.textContent = "もう一度手を選んでね。";
       }
 
       document.querySelectorAll(".choice").forEach((button) => {
@@ -283,6 +376,7 @@
         computerScore = 0;
         playerScoreElement.textContent = playerScore;
         computerScoreElement.textContent = computerScore;
+        revealElement.hidden = true;
         resultElement.dataset.outcome = "";
         resultTitle.textContent = "さあ、勝負！";
         resultDetail.textContent = "グー・パー・チョキから選んでね。";
