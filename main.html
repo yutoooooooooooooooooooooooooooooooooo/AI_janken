@@ -458,6 +458,229 @@
         line-height: 1;
       }
 
+      .baseball-topbar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .baseball-topbar .reset {
+        margin: 0;
+        padding: 9px 14px;
+        font-size: 0.9rem;
+      }
+
+      .baseball-scoreboard {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .baseball-score {
+        min-width: 100px;
+        padding: 12px 20px;
+        border: 1px solid rgba(151, 199, 239, 0.75);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
+      }
+
+      .baseball-score span,
+      .baseball-score strong {
+        display: block;
+      }
+
+      .baseball-score span {
+        font-size: 0.8rem;
+      }
+
+      .baseball-score strong {
+        margin-top: 4px;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .baseball-scene {
+        position: relative;
+        z-index: 1;
+        height: 330px;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.72);
+        border-radius: 26px;
+        background:
+          radial-gradient(ellipse at 50% 50%, rgba(245, 215, 149, 0.96) 0 13%, transparent 13.5%),
+          linear-gradient(180deg, #7dca87 0%, #4da768 56%, #388c59 100%);
+        box-shadow: inset 0 0 32px rgba(13, 69, 42, 0.25), 0 12px 26px rgba(7, 31, 51, 0.18);
+      }
+
+      .baseball-scene::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150px;
+        height: 150px;
+        border: 2px solid rgba(255, 255, 255, 0.55);
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .baseball-scene::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fff;
+        transform: translate(-50%, -50%);
+      }
+
+      .baseball-player {
+        position: absolute;
+        z-index: 1;
+        left: 50%;
+        display: grid;
+        justify-items: center;
+        gap: 2px;
+        color: #fff;
+        font-weight: 800;
+        text-shadow: 0 2px 5px rgba(9, 48, 29, 0.6);
+        transform: translateX(-50%);
+      }
+
+      .baseball-player span {
+        font-size: 2.5rem;
+        line-height: 1;
+      }
+
+      .baseball-pitcher {
+        top: 35%;
+      }
+
+      .baseball-batter {
+        bottom: 12px;
+      }
+
+      .baseball-scene.pitching .baseball-pitcher {
+        animation: pitcher-throw 560ms ease-in-out both;
+        transform-origin: 50% 80%;
+      }
+
+      .baseball-scene.swinging .baseball-batter span {
+        animation: batter-swing 420ms ease-in-out;
+        transform-origin: 50% 80%;
+      }
+
+      .pitch-ball {
+        position: absolute;
+        z-index: 2;
+        top: 52%;
+        left: 50%;
+        width: 25px;
+        height: 25px;
+        border: 2px solid #d8443d;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 3px 8px rgba(16, 49, 31, 0.35);
+        opacity: 0;
+        transform: translate(-50%, -50%);
+      }
+
+      .pitch-ball::before,
+      .pitch-ball::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        width: 5px;
+        height: 15px;
+        border: 1px solid #d8443d;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+      }
+
+      .pitch-ball::before {
+        left: 4px;
+      }
+
+      .pitch-ball::after {
+        right: 4px;
+      }
+
+      .baseball-scene.pitching .pitch-ball {
+        animation: ball-flight 1400ms linear forwards;
+      }
+
+      @keyframes pitcher-throw {
+        0%, 100% { transform: translateX(-50%) rotate(0); }
+        25% { transform: translateX(-50%) rotate(-12deg) translateY(-4px); }
+        55% { transform: translateX(-50%) rotate(16deg) translateY(2px); }
+      }
+
+      @keyframes batter-swing {
+        0% { transform: rotate(0); }
+        45% { transform: rotate(-35deg) scale(1.1); }
+        100% { transform: rotate(45deg); }
+      }
+
+      @keyframes ball-flight {
+        0% { top: 52%; opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+        100% { top: 77%; opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+      }
+
+      .baseball-result {
+        position: relative;
+        z-index: 1;
+        min-height: 84px;
+        margin: 16px 0;
+        padding: 16px;
+        border: 1px solid rgba(120, 183, 245, 0.5);
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(233, 246, 255, 0.95), rgba(205, 230, 251, 0.9));
+        color: var(--primary-strong);
+        font-size: 1.25rem;
+        font-weight: 800;
+      }
+
+      .swing-button {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        min-height: 64px;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: 20px;
+        background: linear-gradient(180deg, #ffe082, #ffb52e);
+        color: #583300;
+        cursor: pointer;
+        font: inherit;
+        font-size: 1.2rem;
+        font-weight: 900;
+        box-shadow: 0 10px 24px rgba(77, 51, 5, 0.2);
+      }
+
+      .swing-button:hover:not(:disabled) {
+        filter: brightness(1.05);
+        transform: translateY(-2px);
+      }
+
+      .swing-button:disabled {
+        cursor: wait;
+        opacity: 0.72;
+      }
+
+      .swing-button:focus-visible,
+      .baseball-topbar .reset:focus-visible {
+        outline: 3px solid rgba(255, 255, 255, 0.9);
+        outline-offset: 3px;
+      }
+
       @media (max-width: 420px) {
         .game {
           padding: 22px 16px 20px;
@@ -483,6 +706,15 @@
           gap: 10px;
           padding: 14px 8px 8px;
         }
+
+        .baseball-scene {
+          height: 300px;
+        }
+
+        .baseball-score {
+          min-width: 0;
+          flex: 1;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -507,6 +739,14 @@
         <span class="game-option-copy">
           <strong>じゃんけん</strong>
           <small>AIとじゃんけん勝負！</small>
+        </span>
+        <span class="game-option-arrow" aria-hidden="true">›</span>
+      </button>
+      <button class="game-option" id="start-baseball" type="button">
+        <span class="game-option-icon" aria-hidden="true">⚾</span>
+        <span class="game-option-copy">
+          <strong>野球ゲーム</strong>
+          <small>ボールに合わせてスイング！</small>
         </span>
         <span class="game-option-arrow" aria-hidden="true">›</span>
       </button>
@@ -562,6 +802,42 @@
       </div>
     </main>
 
+    <main class="game" id="baseball-screen" hidden>
+      <div class="baseball-topbar">
+        <button class="reset" id="back-to-menu" type="button">ゲーム選択へ</button>
+        <button class="reset" id="reset-baseball" type="button">リスタート</button>
+      </div>
+      <p class="eyebrow">BASEBALL TIMING GAME</p>
+      <h1>野球ゲーム</h1>
+      <p class="intro">ボールがホームに来た瞬間にスイング！</p>
+
+      <section class="baseball-scoreboard" aria-label="試合スコア">
+        <div class="baseball-score">
+          <span>ヒット</span>
+          <strong id="baseball-hits">0</strong>
+        </div>
+        <div class="baseball-score">
+          <span>アウト</span>
+          <strong id="baseball-outs">0 / 3</strong>
+        </div>
+      </section>
+
+      <section class="baseball-scene" id="baseball-scene" aria-label="野球場">
+        <div class="baseball-player baseball-pitcher">
+          <span aria-hidden="true">🤾‍♂️</span>
+          <strong>ピッチャー</strong>
+        </div>
+        <div class="pitch-ball" aria-hidden="true"></div>
+        <div class="baseball-player baseball-batter">
+          <span aria-hidden="true">🏏</span>
+          <strong>バッター</strong>
+        </div>
+      </section>
+
+      <p class="baseball-result" id="baseball-result" aria-live="polite" aria-atomic="true">投球を待とう！</p>
+      <button class="swing-button" id="swing-button" type="button" disabled>タイミングよくスイング！</button>
+    </main>
+
     <script>
       const hands = {
         rock: { name: "グー", emoji: "✊" },
@@ -592,11 +868,137 @@
       const choiceButtons = document.querySelectorAll(".choice");
       const gameMenu = document.querySelector("#game-menu");
       const gameScreen = document.querySelector("#game-screen");
+      const baseballScreen = document.querySelector("#baseball-screen");
+      const baseballScene = document.querySelector("#baseball-scene");
+      const baseballHitsElement = document.querySelector("#baseball-hits");
+      const baseballOutsElement = document.querySelector("#baseball-outs");
+      const baseballResultElement = document.querySelector("#baseball-result");
+      const swingButton = document.querySelector("#swing-button");
+      let baseballHits = 0;
+      let baseballOuts = 0;
+      let baseballActive = false;
+      let pitchStartedAt = null;
+      let nextPitchTimer = null;
+      let pitchTimeout = null;
+      let swingAnimationTimer = null;
 
       document.querySelector("#start-janken").addEventListener("click", () => {
         gameMenu.hidden = true;
         gameScreen.hidden = false;
         choiceButtons[0].focus();
+      });
+
+      function stopBaseballTimers() {
+        window.clearTimeout(nextPitchTimer);
+        window.clearTimeout(pitchTimeout);
+        window.clearTimeout(swingAnimationTimer);
+        nextPitchTimer = null;
+        pitchTimeout = null;
+        swingAnimationTimer = null;
+        pitchStartedAt = null;
+        baseballScene.classList.remove("pitching");
+        baseballScene.classList.remove("swinging");
+        swingButton.disabled = true;
+      }
+
+      function updateBaseballScore() {
+        baseballHitsElement.textContent = baseballHits;
+        baseballOutsElement.textContent = `${baseballOuts} / 3`;
+      }
+
+      function schedulePitch(delay) {
+        if (!baseballActive) {
+          return;
+        }
+
+        nextPitchTimer = window.setTimeout(() => {
+          pitchStartedAt = performance.now();
+          baseballScene.classList.add("pitching");
+          swingButton.disabled = false;
+          baseballResultElement.textContent = "ボールが来る！タイミングを合わせて！";
+          pitchTimeout = window.setTimeout(() => resolvePitch("miss"), 1400);
+        }, delay);
+      }
+
+      function resolvePitch(result) {
+        if (!baseballActive || pitchStartedAt === null) {
+          return;
+        }
+
+        window.clearTimeout(pitchTimeout);
+        pitchTimeout = null;
+        pitchStartedAt = null;
+        baseballScene.classList.remove("pitching");
+        swingButton.disabled = true;
+
+        if (result === "home-run") {
+          baseballHits += 3;
+          baseballResultElement.textContent = "ホームラン！ジャストミート！ +3";
+        } else if (result === "hit") {
+          baseballHits += 1;
+          baseballResultElement.textContent = "ヒット！ナイススイング！ +1";
+        } else {
+          baseballOuts += 1;
+          baseballResultElement.textContent = result === "miss" ? "見逃し！アウト…" : "空振り…アウト！";
+        }
+
+        updateBaseballScore();
+        if (baseballOuts >= 3) {
+          baseballActive = false;
+          baseballResultElement.textContent = `ゲーム終了！ヒット ${baseballHits} 点`;
+          swingButton.textContent = "リスタートしてもう一度！";
+          swingButton.disabled = false;
+          return;
+        }
+
+        schedulePitch(900);
+      }
+
+      function startBaseball() {
+        stopBaseballTimers();
+        baseballHits = 0;
+        baseballOuts = 0;
+        baseballActive = true;
+        swingButton.textContent = "タイミングよくスイング！";
+        baseballResultElement.textContent = "ピッチャーが投球準備中…";
+        updateBaseballScore();
+        gameMenu.hidden = true;
+        baseballScreen.hidden = false;
+        schedulePitch(700);
+        swingButton.focus();
+      }
+
+      document.querySelector("#start-baseball").addEventListener("click", startBaseball);
+      document.querySelector("#reset-baseball").addEventListener("click", startBaseball);
+      swingButton.addEventListener("click", () => {
+        if (!baseballActive) {
+          startBaseball();
+          return;
+        }
+
+        if (pitchStartedAt === null) {
+          return;
+        }
+
+        baseballScene.classList.remove("swinging");
+        void baseballScene.offsetWidth;
+        baseballScene.classList.add("swinging");
+        window.clearTimeout(swingAnimationTimer);
+        swingAnimationTimer = window.setTimeout(() => {
+          baseballScene.classList.remove("swinging");
+          swingAnimationTimer = null;
+        }, 450);
+
+        const timing = Math.abs(performance.now() - pitchStartedAt - 1050);
+        resolvePitch(timing <= 260 ? "home-run" : timing <= 600 ? "hit" : "out");
+      });
+
+      document.querySelector("#back-to-menu").addEventListener("click", () => {
+        baseballActive = false;
+        stopBaseballTimers();
+        baseballScreen.hidden = true;
+        gameMenu.hidden = false;
+        document.querySelector("#start-baseball").focus();
       });
 
       function play(playerChoice) {
