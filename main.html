@@ -250,6 +250,42 @@
         border-color: rgba(210, 159, 81, 0.7);
       }
 
+      .reveal[data-phase="counting"] .played {
+        animation: fist-pump 600ms ease-in-out infinite;
+      }
+
+      .reveal[data-phase="throw"] .played {
+        animation: hands-meet 350ms ease-out both;
+      }
+
+      .reveal[data-phase="throw"] .played .emoji {
+        animation: hand-reveal 350ms ease-out both;
+      }
+
+      .reveal[data-phase="throw"] .played.ai {
+        animation-name: hands-meet-ai;
+      }
+
+      @keyframes fist-pump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      @keyframes hands-meet {
+        from { transform: translateX(0) scale(1); }
+        to { transform: translateX(8px) scale(1.05); }
+      }
+
+      @keyframes hands-meet-ai {
+        from { transform: translateX(0) scale(1); }
+        to { transform: translateX(-8px) scale(1.05); }
+      }
+
+      @keyframes hand-reveal {
+        from { transform: scale(0.75) rotate(-12deg); }
+        to { transform: scale(1.15) rotate(0); }
+      }
+
       .played span {
         display: block;
         color: #5b82aa;
@@ -325,6 +361,10 @@
         transform: translateY(0);
       }
 
+      .choice:disabled {
+        cursor: wait;
+      }
+
       .choice:focus-visible,
       .reset:focus-visible {
         outline: 3px solid rgba(255, 255, 255, 0.9);
@@ -371,6 +411,8 @@
         *::after {
           scroll-behavior: auto !important;
           transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
         }
       }
     </style>
@@ -441,6 +483,7 @@
 
       let playerScore = 0;
       let computerScore = 0;
+      let roundTimer = null;
 
       const playerScoreElement = document.querySelector("#player-score");
       const computerScoreElement = document.querySelector("#computer-score");
@@ -452,49 +495,83 @@
       const playerHandName = document.querySelector("#player-hand-name");
       const aiHandEmoji = document.querySelector("#ai-hand-emoji");
       const aiHandName = document.querySelector("#ai-hand-name");
+      const choiceButtons = document.querySelectorAll(".choice");
 
       function play(playerChoice) {
         const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-        let outcome;
+        choiceButtons.forEach((button) => {
+          button.disabled = true;
+        });
 
-        if (playerChoice === computerChoice) {
-          outcome = "draw";
-        } else if (winningPairs[playerChoice] === computerChoice) {
-          outcome = "win";
-          playerScore += 1;
-        } else {
-          outcome = "lose";
-          computerScore += 1;
-        }
-
-        const playerHand = hands[playerChoice];
-        const aiHand = hands[computerChoice];
-
-        playerScoreElement.textContent = playerScore;
-        computerScoreElement.textContent = computerScore;
-        playerHandEmoji.textContent = playerHand.emoji;
-        playerHandName.textContent = playerHand.name;
-        aiHandEmoji.textContent = aiHand.emoji;
-        aiHandName.textContent = aiHand.name;
         revealElement.hidden = false;
-        resultElement.dataset.outcome = outcome;
-        resultTitle.textContent = outcome === "draw" ? "あいこ！" : outcome === "win" ? "あなたの勝ち！" : "あなたの負け…";
-        resultDetail.textContent = "もう一度手を選んでね。";
+        revealElement.dataset.phase = "counting";
+        playerHandEmoji.textContent = hands.rock.emoji;
+        playerHandName.textContent = hands.rock.name;
+        aiHandEmoji.textContent = hands.rock.emoji;
+        aiHandName.textContent = hands.rock.name;
+        resultElement.dataset.outcome = "";
+        resultTitle.textContent = "初はグー！";
+        resultDetail.textContent = "AIといっしょに手を振って…";
+
+        roundTimer = window.setTimeout(() => {
+          resultTitle.textContent = "じゃんけん…";
+          roundTimer = window.setTimeout(() => {
+            revealElement.dataset.phase = "throw";
+            resultTitle.textContent = "ぽん！";
+            roundTimer = window.setTimeout(() => {
+              const outcome = playerChoice === computerChoice
+                ? "draw"
+                : winningPairs[playerChoice] === computerChoice
+                  ? "win"
+                  : "lose";
+
+              if (outcome === "win") {
+                playerScore += 1;
+              } else if (outcome === "lose") {
+                computerScore += 1;
+              }
+
+              const playerHand = hands[playerChoice];
+              const aiHand = hands[computerChoice];
+
+              playerScoreElement.textContent = playerScore;
+              computerScoreElement.textContent = computerScore;
+              playerHandEmoji.textContent = playerHand.emoji;
+              playerHandName.textContent = playerHand.name;
+              aiHandEmoji.textContent = aiHand.emoji;
+              aiHandName.textContent = aiHand.name;
+              revealElement.dataset.phase = "result";
+              resultElement.dataset.outcome = outcome;
+              resultTitle.textContent = outcome === "draw" ? "あいこ！" : outcome === "win" ? "あなたの勝ち！" : "あなたの負け…";
+              resultDetail.textContent = "もう一度手を選んでね。";
+              choiceButtons.forEach((button) => {
+                button.disabled = false;
+              });
+              roundTimer = null;
+            }, 350);
+          }, 600);
+        }, 600);
       }
 
-      document.querySelectorAll(".choice").forEach((button) => {
+      choiceButtons.forEach((button) => {
         button.addEventListener("click", () => play(button.dataset.choice));
       });
 
       document.querySelector("#reset").addEventListener("click", () => {
+        window.clearTimeout(roundTimer);
+        roundTimer = null;
         playerScore = 0;
         computerScore = 0;
         playerScoreElement.textContent = playerScore;
         computerScoreElement.textContent = computerScore;
         revealElement.hidden = true;
+        delete revealElement.dataset.phase;
         resultElement.dataset.outcome = "";
         resultTitle.textContent = "さあ、勝負！";
         resultDetail.textContent = "グー・パー・チョキから選んでね。";
+        choiceButtons.forEach((button) => {
+          button.disabled = false;
+        });
       });
     </script>
   </body>
