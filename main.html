@@ -509,7 +509,7 @@
       .baseball-scene {
         position: relative;
         z-index: 1;
-        height: 330px;
+        height: clamp(380px, 46vw, 690px);
         overflow: hidden;
         border: 3px solid rgba(255, 255, 255, 0.72);
         border-radius: 26px;
@@ -525,8 +525,13 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        transform: perspective(900px) rotateX(2deg);
+        transform: perspective(1200px) rotateX(4deg) scale(1.015);
         transform-origin: center bottom;
+      }
+
+      .baseball-game {
+        width: min(100%, 1480px);
+        padding: clamp(20px, 3vw, 46px);
       }
 
       .pitcher-figure,
@@ -551,15 +556,15 @@
       }
 
       .baseball-scene.pitching .pitcher-figure {
-        animation: pitcher-throw 560ms ease-in-out both;
+        animation: pitcher-throw 700ms ease-in-out both;
       }
 
       .baseball-scene.swinging .batter-figure {
-        animation: batter-body-swing 420ms ease-in-out;
+        animation: batter-body-swing 520ms ease-in-out;
       }
 
       .baseball-scene.swinging .batter-bat {
-        animation: batter-swing 420ms ease-in-out;
+        animation: batter-swing 520ms ease-in-out;
       }
 
       .swing-zone {
@@ -600,7 +605,7 @@
       .pitch-ball {
         position: absolute;
         z-index: 4;
-        top: 74%;
+        top: 62%;
         left: 50%;
         width: 25px;
         height: 25px;
@@ -634,43 +639,51 @@
       }
 
       .baseball-scene.pitching .pitch-ball {
-        animation: ball-flight 1400ms linear forwards;
+        animation: ball-flight 2700ms cubic-bezier(0.35, 0.05, 0.65, 1) forwards;
       }
 
       .baseball-scene.hitting .pitch-ball {
-        animation: batted-ball-flight 1050ms cubic-bezier(0.2, 0.65, 0.35, 1) forwards;
+        animation: batted-ball-flight 1150ms cubic-bezier(0.2, 0.65, 0.35, 1) forwards;
       }
 
       .baseball-scene.hitting.home-run .pitch-ball {
-        animation-duration: 1300ms;
+        animation-duration: 1600ms;
+      }
+
+      .baseball-scene.hitting.foul .pitch-ball {
+        animation-duration: 900ms;
       }
 
       @keyframes pitcher-throw {
-        0%, 100% { transform: rotate(0); }
-        25% { transform: rotate(-12deg) translateY(-4px); }
-        55% { transform: rotate(16deg) translateY(2px); }
+        0%, 100% { transform: rotate(0) translateY(0); }
+        22% { transform: rotate(-17deg) translateY(-5px); }
+        48% { transform: rotate(23deg) translateY(-3px) scale(1.04); }
+        72% { transform: rotate(-7deg) translateY(2px); }
       }
 
       @keyframes batter-swing {
         0% { transform: rotate(0); }
-        45% { transform: rotate(-70deg) scale(1.08); }
+        40% { transform: rotate(-72deg) scale(1.08); }
+        75% { transform: rotate(12deg) scale(1.02); }
         100% { transform: rotate(18deg); }
       }
 
       @keyframes batter-body-swing {
         0%, 100% { transform: rotate(0); }
-        45% { transform: rotate(-8deg) translateY(-2px); }
+        40% { transform: rotate(-9deg) translateY(-3px); }
+        75% { transform: rotate(5deg) translateY(1px); }
       }
 
       @keyframes ball-flight {
-        0% { top: 74%; opacity: 1; transform: translate(-50%, -50%) scale(0.55); }
-        100% { top: 88%; opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+        0% { top: 62%; left: 50%; opacity: 1; transform: translate(-50%, -50%) scale(0.38); }
+        45% { top: 75%; left: var(--pitch-mid-x, 50%); opacity: 1; transform: translate(-50%, -50%) scale(0.78); }
+        100% { top: 88%; left: var(--pitch-end-x, 50%); opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
       }
 
       @keyframes batted-ball-flight {
         0% { top: 88%; left: 50%; opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
-        35% { top: 49%; left: 55%; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        100% { top: 7%; left: 70%; opacity: 0.2; transform: translate(-50%, -50%) scale(0.25); }
+        30% { top: var(--flight-mid-y, 48%); left: var(--flight-mid-x, 55%); opacity: 1; transform: translate(-50%, -50%) scale(0.95); }
+        100% { top: var(--flight-end-y, 18%); left: var(--flight-end-x, 70%); opacity: 0.15; transform: translate(-50%, -50%) scale(0.25); }
       }
 
       @keyframes timing-pulse {
@@ -772,6 +785,17 @@
         }
       }
 
+      @media (max-width: 700px) {
+        .baseball-game {
+          width: 100%;
+          padding: 20px 14px;
+        }
+
+        .baseball-game .baseball-scene {
+          height: clamp(260px, 72vw, 440px);
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -801,7 +825,7 @@
         <span class="game-option-icon" aria-hidden="true">⚾</span>
         <span class="game-option-copy">
           <strong>野球ゲーム</strong>
-          <small>ボールに合わせてスイング！</small>
+          <small>タイミングを合わせてホームラン！</small>
         </span>
         <span class="game-option-arrow" aria-hidden="true">›</span>
       </button>
@@ -857,14 +881,14 @@
       </div>
     </main>
 
-    <main class="game" id="baseball-screen" hidden>
+    <main class="game baseball-game" id="baseball-screen" hidden>
       <div class="baseball-topbar">
         <button class="reset" id="back-to-menu" type="button">ゲーム選択へ</button>
         <button class="reset" id="reset-baseball" type="button">リスタート</button>
       </div>
       <p class="eyebrow">BASEBALL TIMING GAME</p>
       <h1>野球ゲーム</h1>
-      <p class="intro">光るゾーンにボールが来たらスイング！</p>
+      <p class="intro">投球を見極めてスイング！芯でとらえてホームランを狙おう。</p>
 
       <section class="baseball-scoreboard" aria-label="試合スコア">
         <div class="baseball-score">
@@ -874,6 +898,10 @@
         <div class="baseball-score">
           <span>アウト</span>
           <strong id="baseball-outs">0 / 3</strong>
+        </div>
+        <div class="baseball-score">
+          <span>ファウル</span>
+          <strong id="baseball-fouls">0</strong>
         </div>
       </section>
 
@@ -961,7 +989,7 @@
           <g>
             <path d="M245 42h150a8 8 0 0 1 8 8v45H237V50a8 8 0 0 1 8-8Z" fill="#101d2c" stroke="#c49b59" stroke-width="3"/>
             <rect x="248" y="52" width="144" height="25" rx="3" fill="#24394d"/>
-            <text id="stadium-score" x="320" y="64" fill="#ffdf80" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="1">HITS 0 · OUTS 0</text>
+            <text id="stadium-score" x="320" y="64" fill="#ffdf80" font-size="7.5" font-weight="800" text-anchor="middle" letter-spacing=".6">HITS 0 · OUTS 0 · FOULS 0</text>
             <text x="320" y="89" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">STADIUM</text>
           </g>
 
@@ -1012,6 +1040,8 @@
 
           <ellipse cx="320" cy="281" rx="38" ry="15" fill="#70452f" opacity=".3"/>
           <ellipse cx="320" cy="275" rx="35" ry="14" fill="url(#stadium-dirt)" stroke="#efcc91" stroke-width="2"/>
+          <path d="M314 269h12v3h-12z" fill="#fff8e9" stroke="#d6d3c7" stroke-width=".7"/>
+          <path d="M347 296h44v56h-44z" fill="none" stroke="#fff8e9" stroke-opacity=".72" stroke-width="1.5"/>
           <path d="m320 339 10 8-10 9-10-9z" fill="#fff" stroke="#d4d4cf" stroke-width="1"/>
 
           <g transform="translate(320 278)">
@@ -1052,7 +1082,7 @@
           </g>
         </svg>
         <div class="swing-zone" aria-hidden="true"><span>ここでスイング！</span></div>
-        <div class="pitch-ball" aria-hidden="true"></div>
+        <div class="pitch-ball" id="pitch-ball" aria-hidden="true"></div>
       </section>
 
       <p class="baseball-result" id="baseball-result" aria-live="polite" aria-atomic="true">投球を待とう！</p>
@@ -1093,11 +1123,14 @@
       const baseballScene = document.querySelector("#baseball-scene");
       const baseballHitsElement = document.querySelector("#baseball-hits");
       const baseballOutsElement = document.querySelector("#baseball-outs");
+      const baseballFoulsElement = document.querySelector("#baseball-fouls");
       const stadiumScoreElement = document.querySelector("#stadium-score");
       const baseballResultElement = document.querySelector("#baseball-result");
       const swingButton = document.querySelector("#swing-button");
+      const pitchBall = document.querySelector("#pitch-ball");
       let baseballHits = 0;
       let baseballOuts = 0;
+      let baseballFouls = 0;
       let baseballActive = false;
       let pitchStartedAt = null;
       let nextPitchTimer = null;
@@ -1125,6 +1158,7 @@
         baseballScene.classList.remove("timing-window");
         baseballScene.classList.remove("hitting");
         baseballScene.classList.remove("home-run");
+        baseballScene.classList.remove("foul");
         baseballScene.classList.remove("swinging");
         swingButton.classList.remove("timing-ready");
         swingButton.disabled = true;
@@ -1133,7 +1167,8 @@
       function updateBaseballScore() {
         baseballHitsElement.textContent = baseballHits;
         baseballOutsElement.textContent = `${baseballOuts} / 3`;
-        stadiumScoreElement.textContent = `HITS ${baseballHits} · OUTS ${baseballOuts}`;
+        baseballFoulsElement.textContent = baseballFouls;
+        stadiumScoreElement.textContent = `HITS ${baseballHits} · OUTS ${baseballOuts} · FOULS ${baseballFouls}`;
       }
 
       function schedulePitch(delay) {
@@ -1145,10 +1180,14 @@
           pitchStartedAt = performance.now();
           baseballScene.classList.remove("hitting");
           baseballScene.classList.remove("home-run");
+          baseballScene.classList.remove("foul");
+          const pitchDrift = Math.random() * 8 - 4;
+          pitchBall.style.setProperty("--pitch-mid-x", `${50 + pitchDrift}%`);
+          pitchBall.style.setProperty("--pitch-end-x", `${50 - pitchDrift * 0.35}%`);
           baseballScene.classList.add("pitching");
           swingButton.disabled = true;
           swingButton.textContent = "ボールを待とう…";
-          baseballResultElement.textContent = "ボールが飛んでくるよ。光る輪を見て！";
+          baseballResultElement.textContent = "ピッチャーが投げた！ボールをよく見て…";
           timingCueTimer = window.setTimeout(() => {
             if (!baseballActive || pitchStartedAt === null) {
               return;
@@ -1158,9 +1197,9 @@
             swingButton.classList.add("timing-ready");
             swingButton.disabled = false;
             swingButton.textContent = "今だ！スイング！";
-            baseballResultElement.textContent = "今だ！光るゾーンでスイング！";
-          }, 750);
-          pitchTimeout = window.setTimeout(() => resolvePitch("miss"), 1400);
+            baseballResultElement.textContent = "ボールが来た！タイミングを合わせてスイング！";
+          }, 1800);
+          pitchTimeout = window.setTimeout(() => resolvePitch("miss"), 2700);
         }, delay);
       }
 
@@ -1187,7 +1226,12 @@
         } else if (result === "hit") {
           baseballHits += 1;
           baseballScene.classList.add("hitting");
-          baseballResultElement.textContent = "ヒット！ナイススイング！ +1";
+          baseballResultElement.textContent = "フェア！いい当たり！ +1";
+        } else if (result === "foul") {
+          baseballFouls += 1;
+          baseballScene.classList.add("hitting");
+          baseballScene.classList.add("foul");
+          baseballResultElement.textContent = "ファウル！打球がラインの外へ…";
         } else {
           baseballOuts += 1;
           baseballResultElement.textContent = result === "miss" ? "見逃し！アウト…" : "空振り…アウト！";
@@ -1209,6 +1253,7 @@
         stopBaseballTimers();
         baseballHits = 0;
         baseballOuts = 0;
+        baseballFouls = 0;
         baseballActive = true;
         swingButton.textContent = "ボールを待とう…";
         baseballResultElement.textContent = "ピッチャーが投球準備中…";
@@ -1240,9 +1285,32 @@
           swingAnimationTimer = null;
         }, 450);
 
-        const timing = Math.abs(performance.now() - pitchStartedAt - 1050);
-        resolvePitch(timing <= 260 ? "home-run" : timing <= 600 ? "hit" : "out");
+        const timingError = performance.now() - pitchStartedAt - 2250;
+        const timing = Math.abs(timingError);
+        if (timing <= 90) {
+          const sprayAngle = Math.random() * 50 - 25;
+          setBattedBallTrajectory(sprayAngle, 42, true);
+          resolvePitch("home-run");
+        } else if (timing <= 430) {
+          const sprayAngle = timingError * 0.045 + Math.random() * 56 - 28;
+          const launchAngle = Math.max(8, Math.min(50, 28 + timingError * 0.025 + Math.random() * 16 - 8));
+          setBattedBallTrajectory(sprayAngle, launchAngle, false);
+          resolvePitch(Math.abs(sprayAngle) > 45 ? "foul" : "hit");
+        } else {
+          resolvePitch("out");
+        }
       });
+
+      function setBattedBallTrajectory(sprayAngle, launchAngle, homeRun) {
+        const endX = Math.max(5, Math.min(95, 50 + sprayAngle * 0.7));
+        const midX = 50 + sprayAngle * 0.25;
+        const midY = Math.max(34, 69 - launchAngle * 0.55);
+        const endY = homeRun ? 3 : Math.max(10, Math.min(68, 76 - launchAngle * 1.25));
+        pitchBall.style.setProperty("--flight-mid-x", `${midX}%`);
+        pitchBall.style.setProperty("--flight-mid-y", `${midY}%`);
+        pitchBall.style.setProperty("--flight-end-x", `${endX}%`);
+        pitchBall.style.setProperty("--flight-end-y", `${endY}%`);
+      }
 
       document.querySelector("#back-to-menu").addEventListener("click", () => {
         baseballActive = false;
