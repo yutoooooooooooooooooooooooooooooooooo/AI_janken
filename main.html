@@ -514,74 +514,93 @@
         border: 3px solid rgba(255, 255, 255, 0.72);
         border-radius: 26px;
         background:
-          radial-gradient(ellipse at 50% 50%, rgba(245, 215, 149, 0.96) 0 13%, transparent 13.5%),
-          linear-gradient(180deg, #7dca87 0%, #4da768 56%, #388c59 100%);
-        box-shadow: inset 0 0 32px rgba(13, 69, 42, 0.25), 0 12px 26px rgba(7, 31, 51, 0.18);
+          linear-gradient(180deg, #90bfd0 0%, #426378 43%, #193c3f 100%);
+        box-shadow: inset 0 0 48px rgba(4, 17, 26, 0.45), 0 16px 34px rgba(7, 31, 51, 0.3);
+        perspective: 900px;
       }
 
-      .baseball-scene::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 150px;
-        height: 150px;
-        border: 2px solid rgba(255, 255, 255, 0.55);
-        transform: translate(-50%, -50%) rotate(45deg);
-      }
-
-      .baseball-scene::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #fff;
-        transform: translate(-50%, -50%);
-      }
-
-      .baseball-player {
+      .baseball-art {
         position: absolute;
         z-index: 1;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: perspective(900px) rotateX(2deg);
+        transform-origin: center bottom;
+      }
+
+      .pitcher-figure,
+      .batter-figure,
+      .batter-bat {
+        transform-box: fill-box;
+      }
+
+      .pitcher-figure {
+        transform-origin: 50% 88%;
+        filter: drop-shadow(0 4px 3px rgba(7, 20, 23, 0.35));
+      }
+
+      .batter-figure {
+        transform-origin: 50% 90%;
+        filter: drop-shadow(0 4px 3px rgba(7, 20, 23, 0.35));
+      }
+
+      .batter-bat {
+        transform-origin: 18% 72%;
+        filter: drop-shadow(1px 2px 1px rgba(7, 20, 23, 0.45));
+      }
+
+      .baseball-scene.pitching .pitcher-figure {
+        animation: pitcher-throw 560ms ease-in-out both;
+      }
+
+      .baseball-scene.swinging .batter-figure {
+        animation: batter-body-swing 420ms ease-in-out;
+      }
+
+      .baseball-scene.swinging .batter-bat {
+        animation: batter-swing 420ms ease-in-out;
+      }
+
+      .swing-zone {
+        position: absolute;
+        z-index: 2;
+        top: 82%;
         left: 50%;
         display: grid;
-        justify-items: center;
-        gap: 2px;
+        width: 92px;
+        height: 42px;
+        place-items: center;
+        border: 2px dashed rgba(255, 255, 255, 0.82);
+        border-radius: 50%;
         color: #fff;
-        font-weight: 800;
-        text-shadow: 0 2px 5px rgba(9, 48, 29, 0.6);
-        transform: translateX(-50%);
+        opacity: 0.72;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        transform: translate(-50%, -50%);
+        transition: opacity 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+        pointer-events: none;
       }
 
-      .baseball-player span {
-        font-size: 2.5rem;
-        line-height: 1;
+      .swing-zone span {
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: rgba(15, 58, 38, 0.75);
+        font-size: 0.58rem;
+        font-weight: 900;
+        white-space: nowrap;
       }
 
-      .baseball-pitcher {
-        top: 35%;
-      }
-
-      .baseball-batter {
-        bottom: 12px;
-      }
-
-      .baseball-scene.pitching .baseball-pitcher {
-        animation: pitcher-throw 560ms ease-in-out both;
-        transform-origin: 50% 80%;
-      }
-
-      .baseball-scene.swinging .baseball-batter span {
-        animation: batter-swing 420ms ease-in-out;
-        transform-origin: 50% 80%;
+      .baseball-scene.timing-window .swing-zone {
+        border-color: #ffe66d;
+        box-shadow: 0 0 18px 5px rgba(255, 230, 109, 0.8);
+        opacity: 1;
+        animation: timing-pulse 500ms ease-in-out infinite alternate;
       }
 
       .pitch-ball {
         position: absolute;
-        z-index: 2;
-        top: 52%;
+        z-index: 4;
+        top: 74%;
         left: 50%;
         width: 25px;
         height: 25px;
@@ -618,21 +637,50 @@
         animation: ball-flight 1400ms linear forwards;
       }
 
+      .baseball-scene.hitting .pitch-ball {
+        animation: batted-ball-flight 1050ms cubic-bezier(0.2, 0.65, 0.35, 1) forwards;
+      }
+
+      .baseball-scene.hitting.home-run .pitch-ball {
+        animation-duration: 1300ms;
+      }
+
       @keyframes pitcher-throw {
-        0%, 100% { transform: translateX(-50%) rotate(0); }
-        25% { transform: translateX(-50%) rotate(-12deg) translateY(-4px); }
-        55% { transform: translateX(-50%) rotate(16deg) translateY(2px); }
+        0%, 100% { transform: rotate(0); }
+        25% { transform: rotate(-12deg) translateY(-4px); }
+        55% { transform: rotate(16deg) translateY(2px); }
       }
 
       @keyframes batter-swing {
         0% { transform: rotate(0); }
-        45% { transform: rotate(-35deg) scale(1.1); }
-        100% { transform: rotate(45deg); }
+        45% { transform: rotate(-70deg) scale(1.08); }
+        100% { transform: rotate(18deg); }
+      }
+
+      @keyframes batter-body-swing {
+        0%, 100% { transform: rotate(0); }
+        45% { transform: rotate(-8deg) translateY(-2px); }
       }
 
       @keyframes ball-flight {
-        0% { top: 52%; opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
-        100% { top: 77%; opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+        0% { top: 74%; opacity: 1; transform: translate(-50%, -50%) scale(0.55); }
+        100% { top: 88%; opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+      }
+
+      @keyframes batted-ball-flight {
+        0% { top: 88%; left: 50%; opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+        35% { top: 49%; left: 55%; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { top: 7%; left: 70%; opacity: 0.2; transform: translate(-50%, -50%) scale(0.25); }
+      }
+
+      @keyframes timing-pulse {
+        from { transform: translate(-50%, -50%) scale(1); }
+        to { transform: translate(-50%, -50%) scale(1.12); }
+      }
+
+      @keyframes button-pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.02); }
       }
 
       .baseball-result {
@@ -673,6 +721,13 @@
       .swing-button:disabled {
         cursor: wait;
         opacity: 0.72;
+      }
+
+      .swing-button.timing-ready {
+        border-color: #fff6bf;
+        background: linear-gradient(180deg, #fff176, #ff9f1c);
+        box-shadow: 0 0 0 5px rgba(255, 229, 109, 0.3), 0 12px 28px rgba(77, 51, 5, 0.28);
+        animation: button-pulse 500ms ease-in-out infinite alternate;
       }
 
       .swing-button:focus-visible,
@@ -809,7 +864,7 @@
       </div>
       <p class="eyebrow">BASEBALL TIMING GAME</p>
       <h1>野球ゲーム</h1>
-      <p class="intro">ボールがホームに来た瞬間にスイング！</p>
+      <p class="intro">光るゾーンにボールが来たらスイング！</p>
 
       <section class="baseball-scoreboard" aria-label="試合スコア">
         <div class="baseball-score">
@@ -823,19 +878,185 @@
       </section>
 
       <section class="baseball-scene" id="baseball-scene" aria-label="野球場">
-        <div class="baseball-player baseball-pitcher">
-          <span aria-hidden="true">🤾‍♂️</span>
-          <strong>ピッチャー</strong>
-        </div>
+        <svg class="baseball-art" viewBox="0 0 640 360" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="stadium-sky" x2="0" y2="1">
+              <stop stop-color="#9fc9d4"/>
+              <stop offset="1" stop-color="#486778"/>
+            </linearGradient>
+            <linearGradient id="stadium-roof" x2="0" y2="1">
+              <stop stop-color="#243448"/>
+              <stop offset="1" stop-color="#101c2a"/>
+            </linearGradient>
+            <linearGradient id="stadium-seats" x2="0" y2="1">
+              <stop stop-color="#405b78"/>
+              <stop offset="1" stop-color="#1b2c40"/>
+            </linearGradient>
+            <linearGradient id="stadium-wall" x2="0" y2="1">
+              <stop stop-color="#3d7655"/>
+              <stop offset="1" stop-color="#1c4939"/>
+            </linearGradient>
+            <linearGradient id="stadium-grass" x2="0" y2="1">
+              <stop stop-color="#87bd68"/>
+              <stop offset=".48" stop-color="#398d4d"/>
+              <stop offset="1" stop-color="#155b39"/>
+            </linearGradient>
+            <linearGradient id="stadium-dirt" x2="0" y2="1">
+              <stop stop-color="#e4b779"/>
+              <stop offset="1" stop-color="#a7643d"/>
+            </linearGradient>
+            <linearGradient id="pitcher-jersey" x2="1" y2="1">
+              <stop stop-color="#fff"/>
+              <stop offset=".46" stop-color="#d9e7ef"/>
+              <stop offset="1" stop-color="#7998b1"/>
+            </linearGradient>
+            <linearGradient id="batter-jersey" x2="1" y2="1">
+              <stop stop-color="#e95c45"/>
+              <stop offset=".55" stop-color="#a8272b"/>
+              <stop offset="1" stop-color="#591d2b"/>
+            </linearGradient>
+            <linearGradient id="baseball-pants" x2="1" y2="1">
+              <stop stop-color="#fff"/>
+              <stop offset="1" stop-color="#aab9c5"/>
+            </linearGradient>
+            <radialGradient id="baseball-skin" cx=".35" cy=".25">
+              <stop stop-color="#ffdfb4"/>
+              <stop offset="1" stop-color="#b87551"/>
+            </radialGradient>
+            <linearGradient id="baseball-bat-wood" x2="1" y2="0">
+              <stop stop-color="#633d27"/>
+              <stop offset=".5" stop-color="#e4bb79"/>
+              <stop offset="1" stop-color="#795035"/>
+            </linearGradient>
+            <pattern id="stadium-crowd-pattern" width="28" height="25" patternUnits="userSpaceOnUse">
+              <rect width="28" height="25" fill="#263951"/>
+              <path d="M0 23h28" stroke="#718195" stroke-opacity=".42" stroke-width="2"/>
+              <circle cx="7" cy="8" r="3.3" fill="#f2c69e"/>
+              <path d="M3 13q4-3 8 0v7H3z" fill="#e7b648"/>
+              <circle cx="21" cy="8" r="3.3" fill="#edc19b"/>
+              <path d="M17 13q4-3 8 0v7h-8z" fill="#8bb4d3"/>
+            </pattern>
+            <clipPath id="stadium-field-clip">
+              <path d="M0 205Q320 151 640 205V360H0Z"/>
+            </clipPath>
+          </defs>
+
+          <rect width="640" height="360" fill="url(#stadium-sky)"/>
+          <path d="M0 24Q320-35 640 24v38Q320 1 0 62Z" fill="url(#stadium-roof)"/>
+          <path d="M0 54Q320 5 640 54v138Q320 139 0 192Z" fill="url(#stadium-seats)"/>
+          <path d="M0 76Q320 31 640 76v104Q320 132 0 180Z" fill="url(#stadium-crowd-pattern)" opacity=".95"/>
+          <path d="M0 112Q320 68 640 112M0 146Q320 103 640 146" fill="none" stroke="#a9b5bd" stroke-opacity=".5" stroke-width="4"/>
+
+          <g fill="#fff2c4" stroke="#d7e4eb" stroke-width="2">
+            <path d="M48 154 62 45M592 154 578 45" fill="none" stroke-width="5"/>
+            <path d="M37 42h48v10H37zM555 42h48v10h-48z"/>
+            <circle cx="45" cy="58" r="5" stroke="none"/>
+            <circle cx="58" cy="58" r="5" stroke="none"/>
+            <circle cx="71" cy="58" r="5" stroke="none"/>
+            <circle cx="569" cy="58" r="5" stroke="none"/>
+            <circle cx="582" cy="58" r="5" stroke="none"/>
+            <circle cx="595" cy="58" r="5" stroke="none"/>
+          </g>
+
+          <g>
+            <path d="M245 42h150a8 8 0 0 1 8 8v45H237V50a8 8 0 0 1 8-8Z" fill="#101d2c" stroke="#c49b59" stroke-width="3"/>
+            <rect x="248" y="52" width="144" height="25" rx="3" fill="#24394d"/>
+            <text id="stadium-score" x="320" y="64" fill="#ffdf80" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="1">HITS 0 · OUTS 0</text>
+            <text x="320" y="89" fill="#fff" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">STADIUM</text>
+          </g>
+
+          <path d="M0 184Q320 137 640 184v31Q320 174 0 215Z" fill="url(#stadium-wall)"/>
+          <path d="M31 185 144 168l-2 17-111 17ZM496 168l113 17v17l-111-17Z" fill="#d9c17b" opacity=".8"/>
+          <text x="87" y="188" fill="#fff" font-size="8" font-weight="900" text-anchor="middle" letter-spacing="1">HOME RUN</text>
+          <text x="553" y="188" fill="#fff" font-size="8" font-weight="900" text-anchor="middle" letter-spacing="1">BALL PARK</text>
+
+          <path d="M0 205Q320 151 640 205V360H0Z" fill="url(#stadium-grass)"/>
+          <g clip-path="url(#stadium-field-clip)" opacity=".22">
+            <path d="M42 197 174 184 257 360H126Z" fill="#c6e78a"/>
+            <path d="M256 166 321 160 379 360H308Z" fill="#c6e78a"/>
+            <path d="M469 184 598 197 514 360H385Z" fill="#c6e78a"/>
+          </g>
+          <g fill="url(#pitcher-jersey)" stroke="#4f6875" stroke-width="2">
+            <g transform="translate(139 232) scale(.58)">
+              <ellipse cy="2" rx="14" ry="4" fill="#173c2a" opacity=".4" stroke="none"/>
+              <path d="m-6-24-7 21 5 2 9-18 7 17 5-2-5-23z" fill="url(#baseball-pants)"/>
+              <path d="M-11-43q11-7 22 0l5 20q-15 7-32 0z" fill="#d64c3c"/>
+              <circle cy="-53" r="7" fill="url(#baseball-skin)"/>
+              <path d="M-8-56q8-10 16 0v4H-8z" fill="#183c5b"/>
+            </g>
+            <g transform="translate(505 232) scale(.58)">
+              <ellipse cy="2" rx="14" ry="4" fill="#173c2a" opacity=".4" stroke="none"/>
+              <path d="m-6-24-7 21 5 2 9-18 7 17 5-2-5-23z" fill="url(#baseball-pants)"/>
+              <path d="M-11-43q11-7 22 0l5 20q-15 7-32 0z" fill="#d64c3c"/>
+              <circle cy="-53" r="7" fill="url(#baseball-skin)"/>
+              <path d="M-8-56q8-10 16 0v4H-8z" fill="#183c5b"/>
+            </g>
+            <g transform="translate(320 204) scale(.48)">
+              <ellipse cy="2" rx="14" ry="4" fill="#173c2a" opacity=".4" stroke="none"/>
+              <path d="m-6-24-7 21 5 2 9-18 7 17 5-2-5-23z" fill="url(#baseball-pants)"/>
+              <path d="M-11-43q11-7 22 0l5 20q-15 7-32 0z" fill="#d64c3c"/>
+              <circle cy="-53" r="7" fill="url(#baseball-skin)"/>
+              <path d="M-8-56q8-10 16 0v4H-8z" fill="#183c5b"/>
+            </g>
+          </g>
+          <path d="M320 350 50 202M320 350 590 202" fill="none" stroke="#f8f2d5" stroke-opacity=".82" stroke-width="2"/>
+          <path d="M320 210 416 278 320 346 224 278Z" fill="url(#stadium-dirt)" stroke="#f0d7a1" stroke-width="2"/>
+          <path d="M320 218 402 278 320 336 238 278Z" fill="none" stroke="#fff4dd" stroke-opacity=".85" stroke-width="2"/>
+
+          <g fill="#fff8e9" stroke="#d6d3c7" stroke-width="1">
+            <path d="m320 204 6 4-6 4-6-4z"/>
+            <path d="m416 272 7 6-7 6-7-6z"/>
+            <path d="m320 338 7 6-7 6-7-6z"/>
+            <path d="m224 272 7 6-7 6-7-6z"/>
+          </g>
+
+          <ellipse cx="320" cy="281" rx="38" ry="15" fill="#70452f" opacity=".3"/>
+          <ellipse cx="320" cy="275" rx="35" ry="14" fill="url(#stadium-dirt)" stroke="#efcc91" stroke-width="2"/>
+          <path d="m320 339 10 8-10 9-10-9z" fill="#fff" stroke="#d4d4cf" stroke-width="1"/>
+
+          <g transform="translate(320 278)">
+            <g class="pitcher-figure">
+            <ellipse cy="2" rx="14" ry="4" fill="#173c2a" opacity=".42"/>
+            <path d="m-7-28-9 22q-1 4 3 5l5 1 11-22zM4-27l5 21q1 4 5 3l4-2-4-26z" fill="url(#baseball-pants)" stroke="#536779" stroke-width="1.5"/>
+            <path d="m-14-2-4 3 1 3 11 1 1-3-4-3zM10-4l-2 4 2 3 11-2 1-3-5-3z" fill="#293d53"/>
+            <path d="M-13-48q13-8 26 0l6 22q-18 9-38 0z" fill="url(#pitcher-jersey)" stroke="#566f82" stroke-width="1.5"/>
+            <path d="m-11-43-13 12 4 5 13-9M10-44l13-10 4 5-11 16" fill="none" stroke="#d5e0e7" stroke-linecap="round" stroke-width="7"/>
+            <circle cx="26" cy="-49" r="4" fill="url(#baseball-skin)"/>
+            <path d="m-7-53q7-7 14 0l3 5H-10z" fill="#15334c" stroke="#0e2437" stroke-width="2"/>
+            <circle cy="-61" r="8" fill="url(#baseball-skin)" stroke="#8b5a41" stroke-width="1"/>
+            <path d="M-9-64q8-11 18 0v4H-9z" fill="#1e4568"/>
+            <path d="M-3-39v7M4-39v7" stroke="#365b77" stroke-width="2"/>
+            <text x="-70" y="0" fill="#fff" font-size="9" font-weight="800" text-anchor="end" stroke="#28503c" stroke-width="2" paint-order="stroke">ピッチャー</text>
+            </g>
+          </g>
+
+          <g transform="translate(370 337)">
+            <ellipse cy="2" rx="17" ry="5" fill="#173c2a" opacity=".45"/>
+            <g class="batter-figure">
+              <path d="m-6-30-10 21q-2 4 2 6l5 2 14-22zM7-28 9-8q0 4 4 4h5l-1-26z" fill="url(#baseball-pants)" stroke="#596b78" stroke-width="1.5"/>
+              <path d="m-14-5-4 3 1 3 12 2 2-3-5-5zM10-5 8-1l3 3 12-1v-3l-5-3z" fill="#25364b"/>
+              <path d="M-13-50q12-8 25 0l8 24q-19 10-40 0z" fill="url(#batter-jersey)" stroke="#5d2830" stroke-width="1.5"/>
+              <path d="m-8-45-14 8 3 5 14-5" fill="none" stroke="#d8483d" stroke-linecap="round" stroke-width="7"/>
+              <circle cx="-19" cy="-31" r="4" fill="url(#baseball-skin)"/>
+              <circle cy="-57" r="8" fill="url(#baseball-skin)" stroke="#8b5a41" stroke-width="1"/>
+              <path d="M-10-60q10-11 20 0l-2 6h-18z" fill="#8d2428" stroke="#471e2c" stroke-width="2"/>
+              <path d="M-7-37v7M3-38v7" stroke="#f1d8bd" stroke-width="2"/>
+              <text x="0" y="-25" fill="#ffe2c4" font-size="8" font-weight="800" text-anchor="middle">B</text>
+            </g>
+            <g class="batter-bat">
+              <path d="m-9-44 12-7 17-29 5 4-14 31-13 9z" fill="url(#baseball-bat-wood)" stroke="#5d3c29" stroke-width="1.5"/>
+              <path d="m-8-44 6-4" stroke="#242f3a" stroke-width="3"/>
+              <path d="m-8-42 9 10" fill="none" stroke="url(#baseball-skin)" stroke-linecap="round" stroke-width="6"/>
+            </g>
+            <text x="0" y="12" fill="#fff" font-size="9" font-weight="800" text-anchor="middle" stroke="#28503c" stroke-width="2" paint-order="stroke">バッター</text>
+          </g>
+        </svg>
+        <div class="swing-zone" aria-hidden="true"><span>ここでスイング！</span></div>
         <div class="pitch-ball" aria-hidden="true"></div>
-        <div class="baseball-player baseball-batter">
-          <span aria-hidden="true">🏏</span>
-          <strong>バッター</strong>
-        </div>
       </section>
 
       <p class="baseball-result" id="baseball-result" aria-live="polite" aria-atomic="true">投球を待とう！</p>
-      <button class="swing-button" id="swing-button" type="button" disabled>タイミングよくスイング！</button>
+      <button class="swing-button" id="swing-button" type="button" disabled>ボールを待とう…</button>
     </main>
 
     <script>
@@ -872,6 +1093,7 @@
       const baseballScene = document.querySelector("#baseball-scene");
       const baseballHitsElement = document.querySelector("#baseball-hits");
       const baseballOutsElement = document.querySelector("#baseball-outs");
+      const stadiumScoreElement = document.querySelector("#stadium-score");
       const baseballResultElement = document.querySelector("#baseball-result");
       const swingButton = document.querySelector("#swing-button");
       let baseballHits = 0;
@@ -880,6 +1102,7 @@
       let pitchStartedAt = null;
       let nextPitchTimer = null;
       let pitchTimeout = null;
+      let timingCueTimer = null;
       let swingAnimationTimer = null;
 
       document.querySelector("#start-janken").addEventListener("click", () => {
@@ -891,19 +1114,26 @@
       function stopBaseballTimers() {
         window.clearTimeout(nextPitchTimer);
         window.clearTimeout(pitchTimeout);
+        window.clearTimeout(timingCueTimer);
         window.clearTimeout(swingAnimationTimer);
         nextPitchTimer = null;
         pitchTimeout = null;
+        timingCueTimer = null;
         swingAnimationTimer = null;
         pitchStartedAt = null;
         baseballScene.classList.remove("pitching");
+        baseballScene.classList.remove("timing-window");
+        baseballScene.classList.remove("hitting");
+        baseballScene.classList.remove("home-run");
         baseballScene.classList.remove("swinging");
+        swingButton.classList.remove("timing-ready");
         swingButton.disabled = true;
       }
 
       function updateBaseballScore() {
         baseballHitsElement.textContent = baseballHits;
         baseballOutsElement.textContent = `${baseballOuts} / 3`;
+        stadiumScoreElement.textContent = `HITS ${baseballHits} · OUTS ${baseballOuts}`;
       }
 
       function schedulePitch(delay) {
@@ -913,9 +1143,23 @@
 
         nextPitchTimer = window.setTimeout(() => {
           pitchStartedAt = performance.now();
+          baseballScene.classList.remove("hitting");
+          baseballScene.classList.remove("home-run");
           baseballScene.classList.add("pitching");
-          swingButton.disabled = false;
-          baseballResultElement.textContent = "ボールが来る！タイミングを合わせて！";
+          swingButton.disabled = true;
+          swingButton.textContent = "ボールを待とう…";
+          baseballResultElement.textContent = "ボールが飛んでくるよ。光る輪を見て！";
+          timingCueTimer = window.setTimeout(() => {
+            if (!baseballActive || pitchStartedAt === null) {
+              return;
+            }
+
+            baseballScene.classList.add("timing-window");
+            swingButton.classList.add("timing-ready");
+            swingButton.disabled = false;
+            swingButton.textContent = "今だ！スイング！";
+            baseballResultElement.textContent = "今だ！光るゾーンでスイング！";
+          }, 750);
           pitchTimeout = window.setTimeout(() => resolvePitch("miss"), 1400);
         }, delay);
       }
@@ -926,16 +1170,23 @@
         }
 
         window.clearTimeout(pitchTimeout);
+        window.clearTimeout(timingCueTimer);
         pitchTimeout = null;
+        timingCueTimer = null;
         pitchStartedAt = null;
         baseballScene.classList.remove("pitching");
+        baseballScene.classList.remove("timing-window");
+        swingButton.classList.remove("timing-ready");
         swingButton.disabled = true;
 
         if (result === "home-run") {
           baseballHits += 3;
+          baseballScene.classList.add("hitting");
+          baseballScene.classList.add("home-run");
           baseballResultElement.textContent = "ホームラン！ジャストミート！ +3";
         } else if (result === "hit") {
           baseballHits += 1;
+          baseballScene.classList.add("hitting");
           baseballResultElement.textContent = "ヒット！ナイススイング！ +1";
         } else {
           baseballOuts += 1;
@@ -951,7 +1202,7 @@
           return;
         }
 
-        schedulePitch(900);
+        schedulePitch(1400);
       }
 
       function startBaseball() {
@@ -959,7 +1210,7 @@
         baseballHits = 0;
         baseballOuts = 0;
         baseballActive = true;
-        swingButton.textContent = "タイミングよくスイング！";
+        swingButton.textContent = "ボールを待とう…";
         baseballResultElement.textContent = "ピッチャーが投球準備中…";
         updateBaseballScore();
         gameMenu.hidden = true;
@@ -976,7 +1227,7 @@
           return;
         }
 
-        if (pitchStartedAt === null) {
+        if (pitchStartedAt === null || swingButton.disabled) {
           return;
         }
 
